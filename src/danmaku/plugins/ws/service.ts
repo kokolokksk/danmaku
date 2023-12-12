@@ -117,7 +117,13 @@ async function recordMsg(msg, liveinfo: LiveInfo) {
       area_id: liveinfo.area_id,
     });
     console.info(dm);
-    biliBiliDanmuRepository.createQueryBuilder().insert().values(dm).execute();
+    if (dm) {
+      biliBiliDanmuRepository
+        .createQueryBuilder()
+        .insert()
+        .values(dm)
+        .execute();
+    }
   } catch (e) {
     console.info(e);
   }

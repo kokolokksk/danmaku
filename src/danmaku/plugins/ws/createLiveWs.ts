@@ -6,7 +6,7 @@ import service from './service';
 import { LiveWS, KeepLiveTCP } from 'bilibili-live-ws';
 
 const createLiveWs = async (data: LiveInfo[], spread: boolean) => {
-  const wsList: KeepLiveTCP[] = [];
+  const wsList: LiveWS[] = [];
   const key = await getKey(19864);
   const test: LiveInfo = {
     id: 0,
@@ -26,7 +26,7 @@ const createLiveWs = async (data: LiveInfo[], spread: boolean) => {
     return spread;
   } else {
     data.forEach((element) => {
-      const live = new KeepLiveTCP(Number(element.real_roomid), {
+      const live = new LiveWS(Number(element.real_roomid), {
         uid: element.uid,
         key: element.key,
         buvid: element.buvid,
@@ -41,11 +41,12 @@ const createLiveWs = async (data: LiveInfo[], spread: boolean) => {
       });
       ls.on('live', () => {
         console.info(`${ls.roomid}:success connected server`);
-      });
-      getLiveInfo(ls.roomid).then((LiveInfo) => {
-        console.info(`${LiveInfo} try to on`);
-        ls.on('msg', (msg) => {
-          service.recordMsg(msg, LiveInfo);
+        getLiveInfo(ls.roomid).then((LiveInfo) => {
+          console.info(`${JSON.stringify(LiveInfo)} try to on`);
+          ls.on('msg', (msg) => {
+            console.info(`${ls.roomid}: ${msg}`);
+            service.recordMsg(msg, LiveInfo);
+          });
         });
       });
     });
@@ -82,7 +83,9 @@ async function getLiveInfo(roomid: number) {
 async function getKey(roomid: number) {
   const key = await axios
     .get(
-      `https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${roomid}`,
+      // `https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${roomid}`,
+      // `https://api.live.bilibili.com/room/v1/Danmu/getConf?room_id=${roomid}&platform=pc&player=web`,
+      `https://api.live.bilibili.com/xlive/web-room/v1/index/getDanmuInfo?id=${roomid}&type=0`,
     )
     // eslint-disable-next-line func-names
     .then((res) => {

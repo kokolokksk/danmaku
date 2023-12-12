@@ -756,6 +756,17 @@ const transformMsg = async (
       console.error(data);
       danmu = undefined;
       break;
+    case 'LIVE_INTERACTIVE_GAME':
+      console.error('is LIVE_INTERACTIVE_GAME');
+      console.error(data);
+      danmu.type = 1;
+      danmu.uid = data.data.uid;
+      danmu.nickname = data.data.uname;
+      danmu.avatarFace = data.data.uface;
+      danmu.content = data.data.msg;
+      danmu.fansLevel = data.data.fans_medal_level;
+      danmu.timestamp = data.data.timestamp;
+      break;
     case 'SUPER_CHAT_MESSAGE':
       //   {
       //     "cmd": "SUPER_CHAT_MESSAGE",
@@ -837,6 +848,10 @@ const transformMsg = async (
     default:
       danmu = undefined;
       break;
+  }
+  if (danmu) {
+    danmu.createdAt = new Date();
+    danmu.id = danmu.uid + danmu.createdAt.getTime();
   }
   return danmu;
 };
