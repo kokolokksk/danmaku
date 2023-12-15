@@ -10,5 +10,5 @@ async function bootstrap() {
 bootstrap();
 function initDanmaku() {
   console.log('init danmaku!');
-  loadDefaultTask();
+  // loadDefaultTask();
 }

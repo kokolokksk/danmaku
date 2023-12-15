@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { stopAll, wsDetails } from './danmaku/core/core';
+import { stopAll, wsDetails, login } from './danmaku/core/core';
 
 @Injectable()
 export class AppService {
@@ -15,5 +15,8 @@ export class AppService {
   }
   detail(): string {
     return wsDetails();
+  }
+  async login(request: any): Promise<string> {
+    return await login(request);
   }
 }
